@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::div})}">
+<body>
+    <div class="product-detail-wrapper" style="padding-bottom: 60px;">
+        <style>
+            .breadcrumb-wrapper {
+                background-color: var(--card-bg);
+                border-bottom: 1px solid var(--border-color);
+                padding: 10px 0;
+                margin-bottom: 20px;
+                font-size: 0.9rem;
+            }
+            .breadcrumb {
+                margin: 0;
+            }
+            .breadcrumb-item a {
+                color: #0056b3;
+                text-decoration: none;
+            }
+            
+            .product-block {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 24px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--text-color);
+                margin-bottom: 10px;
+                line-height: 1.4;
+            }
+            
+            .product-sku {
+                color: #666;
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .image-gallery {
+                border: 1px solid var(--border-color);
+                padding: 10px;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .main-img {
+                max-width: 100%;
+                max-height: 350px;
+                object-fit: contain;
+            }
+            .thumbnail-container {
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+            }
+            .thumbnail-img {
+                width: 64px;
+                height: 64px;
+                border: 2px solid transparent;
+                border-radius: 8px;
+                object-fit: contain;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .thumbnail-img:hover, .thumbnail-img.active {
+                border-color: var(--nav-bg);
+                transform: translateY(-2px);
+            }
+            
+            .price-box {
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+            }
+            .price-new {
+                color: var(--price-color);
+                font-size: 2rem;
+                font-weight: 700;
+                line-height: 1;
+            }
+            .price-old {
+                text-decoration: line-through;
+                color: #888;
+                font-size: 1.1rem;
+                margin-left: 15px;
+            }
+            
+            .promo-box {
+                border: 1px solid var(--accent-color);
+                border-radius: 12px;
+                margin-bottom: 24px;
+                overflow: hidden;
+            }
+            .promo-header {
+                background-color: #fff7ed; /* Light orange */
+                color: var(--accent-color);
+                padding: 10px 15px;
+                font-weight: 700;
+                border-bottom: 1px solid var(--accent-color);
+                display: flex;
+                align-items: center;
+            }
+            .promo-content {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+            .promo-content ul {
+                padding-left: 20px;
+                margin-bottom: 0;
+            }
+            .promo-content li {
+                margin-bottom: 8px;
+            }
+            
+            .btn-buy-now {
+                background-color: var(--accent-color);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 14px;
+                width: 100%;
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+                transition: all 0.2s;
+                display: block;
+            }
+            .btn-buy-now:hover {
+                background-color: #ea580c;
+                color: white;
+                transform: translateY(-2px);
+            }
+            .btn-buy-now small {
+                display: block;
+                font-size: 0.8rem;
+                font-weight: normal;
+                text-transform: none;
+                margin-top: 3px;
+            }
+            .btn-installment {
+                background-color: #288ad6;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 14px;
+                width: 100%;
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+                transition: all 0.2s;
+            }
+            .btn-installment:hover {
+                background-color: #1e6bb0;
+                color: white;
+                transform: translateY(-2px);
+            }
+            
+            .specs-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .specs-table th {
+                background-color: #f5f5f5;
+                padding: 10px 15px;
+                border: 1px solid var(--border-color);
+                width: 35%;
+                font-weight: 600;
+            }
+            .specs-table td {
+                padding: 10px 15px;
+                border: 1px solid var(--border-color);
+            }
+            
+            .desc-content img {
+                max-width: 100%;
+                height: auto;
+                margin: 15px 0;
+            }
+        </style>
+
+        <div class="breadcrumb-wrapper">
+            <div class="container-fluid px-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="/products">Laptop</a></li>
+                        <li class="breadcrumb-item"><a href="#" th:text="${product.brand.name}">Brand</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Tên SP</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container-fluid px-4">
+            <div class="product-block">
+                <h1 class="product-title" th:text="${product.name}">Laptop Name</h1>
+                <div class="product-sku">
+                    <span>Mã SP: <strong th:text="${'CP-' + product.id}">CP-1</strong></span>
+                    <span class="mx-2">|</span>
+                    <span>Đánh giá: 
+                        <span class="text-warning">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                        </span>
+                    </span>
+                    <span class="mx-2">|</span>
+                    <span class="text-success fw-bold" th:if="${product.stock > 0}"><i class="bi bi-check-circle-fill"></i> Còn hàng</span>
+                    <span class="text-danger fw-bold" th:unless="${product.stock > 0}"><i class="bi bi-x-circle-fill"></i> Liên hệ</span>
+                </div>
+
+                <div class="row">
+                    <!-- Images -->
+                    <div class="col-lg-5 mb-4 mb-lg-0">
+                        <div class="image-gallery">
+                            <img id="mainImage" th:if="${#lists.isEmpty(product.images)}" src="https://dummyimage.com/600x400/e9ecef/6c757d.jpg&text=No+Image" class="main-img" alt="Product Image">
+                            <img id="mainImage" th:unless="${#lists.isEmpty(product.images)}" th:each="img : ${product.images}" th:if="${img.isPrimary}" th:src="@{'/uploads/products/' + ${img.imageUrl}}" class="main-img" alt="Product Image">
+                        </div>
+                        <div class="thumbnail-container" th:unless="${#lists.isEmpty(product.images)}">
+                            <img th:each="img, iterStat : ${product.images}" 
+                                 th:src="@{'/uploads/products/' + ${img.imageUrl}}" 
+                                 class="thumbnail-img" 
+                                 th:classappend="${img.isPrimary} ? 'active' : ''"
+                                 onclick="document.getElementById('mainImage').src=this.src; document.querySelectorAll('.thumbnail-img').forEach(el=>el.classList.remove('active')); this.classList.add('active');">
+                        </div>
+                    </div>
+
+                    <!-- Buy Box -->
+                    <div class="col-lg-7">
+                        <div class="price-box d-flex align-items-end">
+                            <span class="price-new" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">20.000.000 đ</span>
+                            <span class="price-old" th:text="${#numbers.formatDecimal(product.price * 1.1, 0, 'COMMA', 0, 'POINT')} + ' đ'">22.000.000 đ</span>
+                        </div>
+
+                        <div class="promo-box">
+                            <div class="promo-header">
+                                <i class="bi bi-gift-fill me-2 fs-5"></i> KHUYẾN MÃI - QUÀ TẶNG
+                            </div>
+                            <div class="promo-content">
+                                <ul>
+                                    <li>Tặng Balo Laptop cao cấp CenterPoint trị giá 350.000đ</li>
+                                    <li>Tặng Chuột không dây Gaming trị giá 250.000đ</li>
+                                    <li>Giảm ngay 200.000đ khi mua kèm Bàn phím cơ</li>
+                                    <li>Miễn phí cài đặt Windows, Office và phần mềm trọn đời máy</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/cart/add}" method="post" class="mb-4">
+                            <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="hidden" name="quantity" value="1">
+                            
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <button type="submit" class="btn-buy-now" th:disabled="${product.stock == 0}">
+                                        MUA NGAY
+                                        <small>Giao tận nơi hoặc nhận tại cửa hàng</small>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn-installment">
+                                        TRẢ GÓP 0%
+                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Duyệt hồ sơ 5 phút</small>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn-installment">
+                                        TRẢ GÓP QUA THẺ
+                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Visa, Mastercard, JCB</small>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="border p-3 rounded bg-light">
+                            <h6 class="fw-bold text-success mb-2"><i class="bi bi-shop me-1"></i> YÊN TÂM MUA SẮM TẠI CENTERPOINT</h6>
+                            <ul class="mb-0 small" style="padding-left: 20px;">
+                                <li>Cam kết 100% hàng chính hãng, nguyên seal.</li>
+                                <li>Bảo hành chính hãng 24 tháng.</li>
+                                <li>Lỗi là đổi mới trong 30 ngày tận nhà.</li>
+                                <li>Giao hàng siêu tốc trong 2h.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specs & Description -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="product-block">
+                        <h4 class="fw-bold mb-3 p-2 bg-light border-start border-4" style="border-color: var(--header-bg) !important; color: var(--header-bg);">ĐẶC ĐIỂM NỔI BẬT</h4>
+                        <div class="desc-content lh-lg" th:utext="${#strings.replace(product.description, '&#10;', '<br>')}">
+                            Mô tả sản phẩm
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="product-block p-0">
+                        <h5 class="fw-bold m-0 p-3 bg-light border-bottom">THÔNG SỐ KỸ THUẬT</h5>
+                        <table class="specs-table">
+                            <tr th:if="${product.cpu != null && !product.cpu.isEmpty()}">
+                                <th>CPU</th>
+                                <td th:text="${product.cpu}"></td>
+                            </tr>
+                            <tr th:if="${product.ram != null && !product.ram.isEmpty()}">
+                                <th>RAM</th>
+                                <td th:text="${product.ram}"></td>
+                            </tr>
+                            <tr th:if="${product.storage != null && !product.storage.isEmpty()}">
+                                <th>Ổ cứng</th>
+                                <td th:text="${product.storage}"></td>
+                            </tr>
+                            <tr th:if="${product.screen != null && !product.screen.isEmpty()}">
+                                <th>Màn hình</th>
+                                <td th:text="${product.screen}"></td>
+                            </tr>
+                            <tr th:if="${product.vga != null && !product.vga.isEmpty()}">
+                                <th>Card màn hình</th>
+                                <td th:text="${product.vga}"></td>
+                            </tr>
+                            <tr th:if="${product.os != null && !product.os.isEmpty()}">
+                                <th>Hệ điều hành</th>
+                                <td th:text="${product.os}"></td>
+                            </tr>
+                            <tr th:if="${product.weight != null && !product.weight.isEmpty()}">
+                                <th>Trọng lượng</th>
+                                <td th:text="${product.weight}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::div})}">
+<head><title>Tài khoản của tôi - CenterPoint</title></head>
+<body>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center pt-4">
+                        <i class="bi bi-person-circle text-secondary" style="font-size: 5rem;"></i>
+                        <h5 class="mt-3" th:text="${user.fullName}">Name</h5>
+                        <p class="text-muted" th:text="${user.email}">Email</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <a href="/profile" class="list-group-item list-group-item-action active"><i class="bi bi-person me-2"></i> Hồ sơ</a>
+                        <a href="/orders" class="list-group-item list-group-item-action"><i class="bi bi-box-seam me-2"></i> Đơn hàng</a>
+                        <a href="/logout" class="list-group-item list-group-item-action text-danger"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">Thông tin cá nhân</h4>
+                        
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <span th:text="${success}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <form th:action="@{/profile/update}" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Họ và tên</label>
+                                    <input type="text" class="form-control" name="fullName" th:value="${user.fullName}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" name="phone" th:value="${user.phone}">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Email <small class="text-muted">(Không thể thay đổi)</small></label>
+                                    <input type="email" class="form-control" th:value="${user.email}" readonly disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Giới tính</label>
+                                    <select class="form-select" name="gender">
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="Nam" th:selected="${user.gender == 'Nam'}">Nam</option>
+                                        <option value="Nữ" th:selected="${user.gender == 'Nữ'}">Nữ</option>
+                                        <option value="Khác" th:selected="${user.gender == 'Khác'}">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" name="address" rows="3" th:text="${user.address}"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

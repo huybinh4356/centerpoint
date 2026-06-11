@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CenterPoint - Cửa hàng Laptop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f0f2f5;
+            --header-bg: #1E3A8A;
+            /* Deep Royal Blue */
+            --nav-bg: #2563EB;
+            /* Bright Tech Blue */
+            --accent-color: #F97316;
+            /* Vibrant Orange */
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --price-color: #dc2626;
+            /* Deep Red for prices */
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top bar */
+        .top-bar {
+            font-size: 0.85rem;
+            background-color: var(--card-bg) !important;
+        }
+
+        .top-bar a:hover {
+            color: var(--nav-bg) !important;
+        }
+
+        /* Header */
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header-search .form-control {
+            border: none;
+            border-radius: 8px 0 0 8px;
+            /* Bo tròn hơn */
+            padding: 10px 15px;
+        }
+
+        .header-search .btn {
+            border-radius: 0 8px 8px 0;
+            /* Bo tròn hơn */
+            color: var(--text-color);
+            background-color: #f8f9fa;
+        }
+
+        /* Nav */
+        .main-nav {
+            background-color: #333333;
+        }
+
+        .main-nav .nav-link {
+            color: #ffffff;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .main-nav .nav-link:hover {
+            background-color: var(--header-bg);
+        }
+
+        @media (min-width: 992px) {
+            .main-nav .dropdown:hover .dropdown-menu {
+                display: block;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        }
+
+        .main-nav .dropdown-item:hover {
+            background-color: #f0f2f5;
+            color: var(--nav-bg);
+            padding-left: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        /* Product Cards */
+        .product-card {
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            /* Bo tròn thẻ sản phẩm */
+            background: var(--card-bg);
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            border-color: var(--nav-bg);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .product-img-wrapper {
+            padding: 15px;
+            position: relative;
+        }
+
+        .product-img {
+            height: 180px;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .price-new {
+            color: var(--price-color);
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .product-title:hover {
+            color: var(--nav-bg);
+        }
+
+        /* Footer */
+        .footer {
+            background: #111827;
+            color: #9ca3af;
+            padding: 40px 0 20px 0;
+            margin-top: 40px;
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .footer h5 {
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar bg-light border-bottom py-1 d-none d-md-block">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+            <span class="text-muted"><i class="bi bi-star-fill text-warning me-1"></i> Hệ thống bán lẻ thiết bị công
+                nghệ chính hãng</span>
+            <div>
+                <a href="/warranty" class="text-decoration-none text-muted me-3"><i class="bi bi-shield-check"></i> Tra
+                    cứu bảo hành</a>
+                <a href="/guide" class="text-decoration-none text-muted"><i class="bi bi-book"></i> Hướng dẫn mua
+                    hàng</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="header-main py-2" style="background-color: var(--header-bg);">
+        <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-3 px-4">
+            <!-- Logo -->
+            <a class="navbar-brand text-white m-0" href="/">
+                Center<span style="color: var(--accent-color);">Point</span>
+            </a>
+
+            <!-- Search -->
+            <div class="flex-grow-1 header-search" style="max-width: 500px;">
+                <form action="/products" method="get" class="d-flex w-100">
+                    <input type="text" name="keyword" class="form-control"
+                        placeholder="Bạn cần tìm laptop, phụ kiện...">
+                    <button class="btn btn-light px-4 fw-bold" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex align-items-center gap-4">
+                <div class="text-white d-flex align-items-center d-none d-lg-flex">
+                    <i class="bi bi-telephone-fill fs-3 me-2" style="color: var(--accent-color);"></i>
+                    <div class="lh-sm">
+                        <small class="d-block text-white-50" style="font-size: 12px;">Gọi mua hàng</small>
+                        <strong class="fs-5" style="color: var(--accent-color);">1900 1234</strong>
+                    </div>
+                </div>
+
+                <a href="/cart" class="text-white text-decoration-none d-flex align-items-center position-relative">
+                    <i class="bi bi-cart3 fs-3 me-2" style="color: var(--accent-color);"></i>
+                    <div class="lh-sm d-none d-sm-block">
+                        <small class="d-block text-white-50" style="font-size: 12px;">Giỏ hàng</small>
+                        <span
+                            class="badge text-white position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill"
+                            style="background-color: var(--accent-color);" th:text="${cartItemCount}">0</span>
+                    </div>
+                </a>
+
+                <!-- Toast for Add to Cart Success -->
+                <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+                    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="bi bi-check-circle me-2"></i> Đã thêm sản phẩm vào giỏ hàng!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dropdown" sec:authorize="isAuthenticated()">
+                    <a href="#" class="text-white text-decoration-none d-flex align-items-center"
+                        data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle fs-3 me-2"></i>
+                        <div class="lh-sm d-none d-sm-block">
+                            <small class="d-block text-white-50" style="font-size: 12px;">Tài khoản</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item" href="/profile">Tài khoản của tôi</a></li>
+                        <li><a class="dropdown-item" href="/orders">Đơn hàng</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item text-danger fw-bold"
+                                href="/admin/dashboard"><i class="bi bi-shield-lock me-2"></i> Trang Quản trị</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="/logout">Đăng xuất</a></li>
+                    </ul>
+                </div>
+
+                <a href="/login" class="text-white text-decoration-none d-flex align-items-center"
+                    sec:authorize="!isAuthenticated()">
+                    <i class="bi bi-person-circle fs-3 me-2"></i>
+                    <div class="lh-sm d-none d-sm-block">
+                        <small class="d-block text-white-50" style="font-size: 12px;">Đăng nhập</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Secondary Nav -->
+    <nav class="navbar navbar-expand-lg py-0 shadow-sm" style="background-color: var(--nav-bg);">
+        <div class="container-fluid px-4">
+            <button class="navbar-toggler my-2 bg-light" type="button" data-bs-toggle="collapse"
+                data-bs-target="#bottomNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="bottomNav">
+                <ul class="navbar-nav w-100 main-nav">
+                    <li class="nav-item dropdown" style="background-color: var(--header-bg);">
+                        <a class="nav-link px-4 fw-bold dropdown-toggle text-white d-flex align-items-center" href="#"
+                            id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-list fs-4 me-2" style="color: var(--accent-color);"></i> DANH MỤC SẢN PHẨM
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow-lg mt-0 py-2" aria-labelledby="categoryDropdown"
+                            style="min-width: 280px; border-radius: 0 0 12px 12px;">
+                            <li th:each="category : ${globalCategories}">
+                                <a class="dropdown-item py-2 fw-medium d-flex align-items-center"
+                                    th:href="@{'/products?categoryId=' + ${category.id}}">
+                                    <i class="bi bi-laptop fs-5 text-secondary me-3"></i>
+                                    <span th:text="${category.name}">Tên danh mục</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 text-primary fw-bold d-flex align-items-center"
+                                    href="/products">
+                                    <i class="bi bi-grid fs-5 text-primary me-3"></i> Xem tất cả sản phẩm
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item border-start border-light border-opacity-25">
+                        <a class="nav-link px-4 fw-medium text-white" href="/products"><i class="bi bi-fire me-1"
+                                style="color: var(--accent-color);"></i> KHUYẾN MÃI HOT</a>
+                    </li>
+                    <li class="nav-item border-start border-light border-opacity-25">
+                        <a class="nav-link px-4 fw-medium text-white" href="/products"><i
+                                class="bi bi-stars text-info me-1"></i> SẢN PHẨM MỚI</a>
+                    </li>
+                    <li class="nav-item border-start border-light border-opacity-25">
+                        <a class="nav-link px-4 fw-medium text-white" href="/warranty"><i
+                                class="bi bi-shield-check text-white me-1"></i> BẢO HÀNH</a>
+                    </li>
+                    <li class="nav-item border-start border-light border-opacity-25">
+                        <a class="nav-link px-4 fw-medium text-white" href="/guide"><i
+                                class="bi bi-journal-text text-white me-1"></i> HƯỚNG DẪN</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div th:replace="${content}"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-fluid px-4">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">VỀ CENTERPOINT</h5>
+                    <p class="small">Hệ thống bán lẻ laptop uy tín hàng đầu. Cam kết chất lượng và dịch vụ tốt nhất cho
+                        khách hàng. Đảm bảo giá rẻ nhất thị trường.</p>
+                    <p class="small text-warning"><i class="bi bi-telephone-fill"></i> Hotline: 1900 1234</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+                    <ul class="list-unstyled small lh-lg">
+                        <li><a href="/"><i class="bi bi-chevron-right me-1" style="color: var(--accent-color);"></i>
+                                Trang chủ</a></li>
+                        <li><a href="/products"><i class="bi bi-chevron-right me-1"
+                                    style="color: var(--accent-color);"></i> Sản phẩm</a></li>
+                        <li><a href="/warranty"><i class="bi bi-chevron-right me-1"
+                                    style="color: var(--accent-color);"></i> Chính sách bảo hành</a></li>
+                        <li><a href="/guide"><i class="bi bi-chevron-right me-1"
+                                    style="color: var(--accent-color);"></i> Hướng dẫn mua hàng</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">HỆ THỐNG CỬA HÀNG</h5>
+                    <p class="small"><i class="bi bi-geo-alt-fill me-2" style="color: var(--accent-color);"></i> 123
+                        Đường Công Nghệ, Quận 1, TP.HCM</p>
+                    <p class="small"><i class="bi bi-geo-alt-fill me-2" style="color: var(--accent-color);"></i> 456
+                        Đường Kỹ Thuật, Quận Đống Đa, Hà Nội</p>
+                    <p class="small"><i class="bi bi-envelope-fill me-2" style="color: var(--accent-color);"></i>
+                        support@centerpoint.vn</p>
+                </div>
+            </div>
+            <hr class="border-secondary mt-2 mb-3">
+            <div class="text-center">
+                <p class="mb-0 small">&copy; 2026 CenterPoint. Cung cấp bởi Antigravity.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

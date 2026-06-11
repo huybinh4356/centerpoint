@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Quản lý Thương hiệu</title></head>
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Quản lý Thương hiệu</h2>
+            <a th:href="@{/admin/brands/create}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Thêm mới</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thương hiệu</th>
+                            <th>Đường dẫn (Slug)</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="brand : ${brands}">
+                            <td th:text="${brand.id}">1</td>
+                            <td th:text="${brand.name}">Dell</td>
+                            <td th:text="${brand.slug}">dell</td>
+                            <td class="text-end">
+                                <a th:href="@{/admin/brands/edit/{id}(id=${brand.id})}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Sửa</a>
+                                <a th:href="@{/admin/brands/delete/{id}(id=${brand.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?');"><i class="bi bi-trash"></i> Xóa</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(brands)}">
+                            <td colspan="4" class="text-center py-4 text-muted">Chưa có thương hiệu nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head>
+    <title>Cài đặt thanh toán</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <h2 class="mb-4">Cài đặt thanh toán</h2>
+        
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Cập nhật mã QR thanh toán</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-4">Ảnh QR này sẽ được hiển thị khi khách hàng chọn phương thức thanh toán Chuyển khoản ngân hàng hoặc MoMo.</p>
+                        
+                        <div class="mb-4 text-center">
+                            <h6 class="mb-3">Mã QR hiện tại</h6>
+                            <img th:src="@{/uploads/system/qr-code.png}" alt="QR Code" class="img-thumbnail" style="max-width: 300px; max-height: 300px; object-fit: contain;" onerror="this.src='https://dummyimage.com/300x300/e9ecef/6c757d.jpg&text=Chưa+có+mã+QR'">
+                        </div>
+
+                        <form th:action="@{/admin/settings/payment/upload-qr}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="qrImage" class="form-label fw-bold">Chọn ảnh QR mới</label>
+                                <input class="form-control" type="file" id="qrImage" name="qrImage" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-upload me-2"></i> Tải lên và Cập nhật
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

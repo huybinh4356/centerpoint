@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Form Sản phẩm</title></head>
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" th:text="${product.id != null ? 'Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}">Thêm Sản Phẩm</h2>
+            <a th:href="@{/admin/products}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/admin/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Đường dẫn (Slug) <span class="text-muted">(Để trống tự động tạo)</span></label>
+                            <input type="text" class="form-control" th:field="*{slug}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Loại Sản phẩm <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{type}" required>
+                                <option th:each="pt : ${T(com.project.centerpoint.entity.ProductType).values()}" 
+                                        th:value="${pt}" 
+                                        th:text="${pt.displayName}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Danh mục <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{category.id}" required>
+                                <option value="">-- Chọn danh mục --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Thương hiệu <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{brand.id}" required>
+                                <option value="">-- Chọn thương hiệu --</option>
+                                <option th:each="brnd : ${brands}" th:value="${brnd.id}" th:text="${brnd.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" th:field="*{price}" required min="0">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giảm giá (%)</label>
+                            <input type="number" class="form-control" th:field="*{discountPercent}" min="0" max="100">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tồn kho <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" th:field="*{stock}" required min="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả sản phẩm</label>
+                        <textarea class="form-control" th:field="*{description}" rows="5"></textarea>
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Thông số kỹ thuật chi tiết</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CPU (Vi xử lý)</label>
+                                    <input type="text" class="form-control" th:field="*{cpu}" placeholder="VD: Intel Core i7 13700H">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">RAM</label>
+                                    <input type="text" class="form-control" th:field="*{ram}" placeholder="VD: 16GB DDR5 4800MHz">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ổ cứng (Storage)</label>
+                                    <input type="text" class="form-control" th:field="*{storage}" placeholder="VD: 512GB SSD NVMe">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Màn hình</label>
+                                    <input type="text" class="form-control" th:field="*{screen}" placeholder="VD: 15.6 inch FHD 144Hz">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Card màn hình (VGA)</label>
+                                    <input type="text" class="form-control" th:field="*{vga}" placeholder="VD: NVIDIA RTX 4060 8GB">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Hệ điều hành (OS)</label>
+                                    <input type="text" class="form-control" th:field="*{os}" placeholder="VD: Windows 11 Home">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Trọng lượng</label>
+                                    <input type="text" class="form-control" th:field="*{weight}" placeholder="VD: 2.1 kg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thông số kỹ thuật mở rộng (Tùy chọn - Định dạng JSON)</label>
+                        <textarea class="form-control" th:field="*{specsJson}" rows="3" placeholder='{"mau_sac": "Đen", "chat_lieu": "Nhôm"}'></textarea>
+                        <small class="text-muted">Chỉ nhập khi có thông số đặc biệt khác.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tải ảnh lên (Chọn nhiều ảnh)</label>
+                        <input type="file" class="form-control" name="imageFiles" multiple accept="image/*">
+                        <small class="text-muted">Lưu ý: Ảnh đầu tiên được chọn sẽ làm ảnh chính.</small>
+                    </div>
+                    
+                    <hr>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Lưu Sản Phẩm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

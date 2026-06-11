@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Dashboard</title></head>
+<body>
+    <div class="container-fluid">
+        <h2 class="mb-4">Dashboard</h2>
+        <!-- Stats Row -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card text-white h-100" style="background: linear-gradient(135deg, #4318ff 0%, #868cff 100%);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Doanh thu</h6>
+                                <h3 class="mb-0 fw-bold" th:text="${#numbers.formatDecimal(totalRevenue != null ? totalRevenue : 0, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="bi bi-currency-dollar fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white h-100" style="background: linear-gradient(135deg, #01b8ff 0%, #00e4ff 100%);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Đơn hàng</h6>
+                                <h3 class="mb-0 fw-bold" th:text="${totalOrders}">0</h3>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="bi bi-cart fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white h-100" style="background: linear-gradient(135deg, #ff8f00 0%, #ffb74d 100%);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Sản phẩm</h6>
+                                <h3 class="mb-0 fw-bold" th:text="${totalProducts}">0</h3>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="bi bi-laptop fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white h-100" style="background: linear-gradient(135deg, #05c380 0%, #3fe7a7 100%);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Người dùng</h6>
+                                <h3 class="mb-0 fw-bold" th:text="${totalUsers}">0</h3>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="bi bi-people fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-4">
+            <div class="card-header pt-4 pb-3 border-0" style="background-color: transparent;">
+                <h5 class="mb-0 fw-bold" style="color: var(--text-main);"><i class="bi bi-clock-history me-2 text-primary"></i> Đơn hàng mới nhất</h5>
+            </div>
+            <div class="card-body p-0">
+                        <tr>
+                            <th>Mã ĐH</th>
+                            <th>Khách hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày đặt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${recentOrders}">
+                            <td><a th:href="@{'/admin/orders/' + ${order.id}}" th:text="'#' + ${order.id}">#1</a></td>
+                            <td th:text="${order.user.fullName}">Name</td>
+                            <td class="text-danger fw-bold" th:text="${#numbers.formatDecimal(order.totalAmount - order.discountAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'">10,000,000đ</td>
+                            <td>
+                                <span class="badge" th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning text-dark' : (order.status.name() == 'DELIVERED' ? 'bg-success' : 'bg-primary')}" th:text="${order.status}">PENDING</span>
+                            </td>
+                            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">11/06/2026</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(recentOrders)}">
+                            <td colspan="5" class="text-center py-4 text-muted">Chưa có đơn hàng nào</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

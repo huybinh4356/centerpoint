@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Form Thương hiệu</title></head>
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" th:text="${brand.id != null ? 'Sửa Thương Hiệu' : 'Thêm Thương Hiệu Mới'}">Thêm Thương Hiệu</h2>
+            <a th:href="@{/admin/brands}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/admin/brands/save}" th:object="${brand}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="slug" class="form-label">Đường dẫn (Slug) <span class="text-muted">(Để trống tự động tạo)</span></label>
+                        <input type="text" class="form-control" id="slug" th:field="*{slug}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Lưu dữ liệu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

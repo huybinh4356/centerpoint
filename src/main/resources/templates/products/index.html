@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::div})}">
+
+<body>
+    <div class="container-fluid px-4 py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sản phẩm</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3"><i class="bi bi-funnel"></i> Bộ Lọc</h5>
+                        <form action="/products" method="get">
+                            <input type="hidden" name="keyword" th:value="${keyword}">
+
+                            <!-- Brand Filter -->
+                            <div class="mb-4">
+                                <h6 class="fw-bold">Thương hiệu</h6>
+                                <div class="form-check" th:each="brand : ${brands}">
+                                    <input class="form-check-input" type="radio" name="brandId" th:value="${brand.id}"
+                                        th:id="'brand_' + ${brand.id}" th:checked="${brand.id == brandId}">
+                                    <label class="form-check-label" th:for="'brand_' + ${brand.id}"
+                                        th:text="${brand.name}"></label>
+                                </div>
+                            </div>
+
+                            <!-- Category Filter -->
+                            <div class="mb-4">
+                                <h6 class="fw-bold">Nhu cầu</h6>
+                                <div class="form-check" th:each="cat : ${categories}">
+                                    <input class="form-check-input" type="radio" name="categoryId" th:value="${cat.id}"
+                                        th:id="'cat_' + ${cat.id}" th:checked="${cat.id == categoryId}">
+                                    <label class="form-check-label" th:for="'cat_' + ${cat.id}"
+                                        th:text="${cat.name}"></label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Lọc sản phẩm</button>
+                                <a href="/products" class="btn btn-outline-secondary">Xóa lọc</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="col-lg-9">
+                <!-- Sort & Meta -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div th:if="${keyword != null && !keyword.isEmpty()}">
+                        Kết quả tìm kiếm cho: <strong th:text="${keyword}"></strong> (<span
+                            th:text="${productPage.totalElements}"></span>)
+                    </div>
+                    <div th:unless="${keyword != null && !keyword.isEmpty()}">
+                        Hiển thị <strong th:text="${productPage.totalElements}"></strong> sản phẩm
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <label class="me-2 text-nowrap">Sắp xếp:</label>
+                        <form action="/products" method="get" id="sortForm">
+                            <input type="hidden" name="keyword" th:value="${keyword}">
+                            <input type="hidden" name="categoryId" th:value="${categoryId}">
+                            <input type="hidden" name="brandId" th:value="${brandId}">
+                            <input type="hidden" name="type" th:value="${type}">
+                            <select name="sort" class="form-select form-select-sm"
+                                onchange="document.getElementById('sortForm').submit()">
+                                <option value="newest" th:selected="${sort == 'newest'}">Mới nhất</option>
+                                <option value="price_asc" th:selected="${sort == 'price_asc'}">Giá tăng dần</option>
+                                <option value="price_desc" th:selected="${sort == 'price_desc'}">Giá giảm dần</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col" th:each="product : ${productPage.content}">
+                        <div class="card h-100 product-card shadow-sm">
+                            <!-- Use first image if exists, else dummy -->
+                            <div class="product-img-wrapper" style="height: 200px; padding: 10px;">
+                                <a th:href="@{'/products/' + ${product.slug}}" class="d-flex w-100 h-100 align-items-center justify-content-center text-decoration-none">
+                                    <img th:if="${#lists.isEmpty(product.images)}"
+                                        src="https://dummyimage.com/400x300/e9ecef/6c757d.jpg&text=No+Image"
+                                        class="card-img-top product-img" alt="Product" style="object-fit: contain; max-height: 100%;">
+                                    <th:block th:unless="${#lists.isEmpty(product.images)}">
+                                        <img th:each="img : ${product.images}" th:if="${img.isPrimary}"
+                                            th:src="@{'/uploads/products/' + ${img.imageUrl}}" class="card-img-top product-img"
+                                            alt="Product" style="object-fit: contain; max-height: 100%;">
+                                    </th:block>
+                                </a>
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="text-muted mb-1" th:text="${product.brand.name}">Brand</h6>
+                                <h5 class="card-title" style="font-size: 1.1rem; line-height: 1.4;">
+                                    <a th:href="@{'/products/' + ${product.slug}}"
+                                        class="text-dark text-decoration-none" th:text="${product.name}">Name</a>
+                                </h5>
+
+                                <div class="mt-auto pt-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fs-5 fw-bold text-danger"
+                                            th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + 'đ'">Giá</span>
+                                        <button class="btn btn-primary btn-sm"><i class="bi bi-cart-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${productPage.totalElements == 0}" class="text-center py-5">
+                    <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">Không tìm thấy sản phẩm nào!</h4>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${productPage.totalPages > 1}" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${productPage.first ? 'disabled' : ''}">
+                            <a class="page-link"
+                                th:href="@{/products(page=${productPage.number - 1}, sort=${sort}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, type=${type})}">Trước</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+                            th:classappend="${i == productPage.number ? 'active' : ''}">
+                            <a class="page-link"
+                                th:href="@{/products(page=${i}, sort=${sort}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, type=${type})}"
+                                th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${productPage.last ? 'disabled' : ''}">
+                            <a class="page-link"
+                                th:href="@{/products(page=${productPage.number + 1}, sort=${sort}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, type=${type})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::div})}">
+
+<body>
+    <div>
+        <!-- Main Banner Area -->
+        <div class="container my-4" style="max-width: 1224px;">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div id="mainBannerCarousel" class="carousel slide" data-bs-ride="carousel"
+                        style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); aspect-ratio: 8/5; background-color: #f8f9fa;">
+                        <div class="carousel-inner h-100">
+                            <div th:each="banner, iterStat : ${mainBanners}"
+                                th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item h-100">
+                                <a
+                                    th:href="${banner.targetUrl != null and !banner.targetUrl.isEmpty()} ? ${banner.targetUrl} : '#'">
+                                    <img th:src="@{'/uploads/products/' + ${banner.imageUrl}}"
+                                        class="d-block w-100 h-100" th:alt="${banner.name}" style="object-fit: cover;">
+                                </a>
+                            </div>
+                            <!-- Default fallback -->
+                            <div th:if="${#lists.isEmpty(mainBanners)}" class="carousel-item active h-100">
+                                <img src="https://images.fpt.shop/unsafe/fit-in/800x500/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/11/1/638344605986877990_F-C1_1200x300.png"
+                                    class="d-block w-100 h-100" alt="Default Main Banner" style="object-fit: cover;">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#mainBannerCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#mainBannerCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-none d-lg-block">
+                    <div class="d-flex flex-column gap-3 h-100">
+                        <th:block th:each="banner, iterStat : ${subBanners}" th:if="${iterStat.index < 2}">
+                            <a th:href="${banner.targetUrl != null and !banner.targetUrl.isEmpty()} ? ${banner.targetUrl} : '#'"
+                                style="flex: 1; display: block; overflow: hidden; border-radius: 12px;">
+                                <img th:src="@{'/uploads/products/' + ${banner.imageUrl}}"
+                                    class="w-100 shadow-sm h-100 banner-img-hover" th:alt="${banner.name}"
+                                    style="object-fit: cover; transition: transform 0.3s ease;">
+                            </a>
+                        </th:block>
+                        <!-- Default fallbacks if less than 2 sub banners -->
+                        <th:block th:if="${#lists.size(subBanners) < 1}">
+                            <div style="flex: 1; display: block; overflow: hidden; border-radius: 12px; background-color: #f8f9fa;" class="shadow-sm">
+                                <img src="https://images.fpt.shop/unsafe/fit-in/400x250/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/10/31/638343734003310023_F-H2_399x110.png"
+                                    class="w-100 h-100 banner-img-hover" alt="Promo 1" style="object-fit: cover; transition: transform 0.3s ease;">
+                            </div>
+                        </th:block>
+                        <th:block th:if="${#lists.size(subBanners) < 2}">
+                            <div style="flex: 1; display: block; overflow: hidden; border-radius: 12px; background-color: #f8f9fa;" class="shadow-sm">
+                                <img src="https://images.fpt.shop/unsafe/fit-in/400x250/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/10/31/638343734003610025_F-H2_399x110.png"
+                                    class="w-100 h-100 banner-img-hover" alt="Promo 2" style="object-fit: cover; transition: transform 0.3s ease;">
+                            </div>
+                        </th:block>
+                        <style>
+                            .banner-img-hover:hover {
+                                transform: scale(1.05);
+                            }
+                            .product-card {
+                                transition: box-shadow 0.3s ease, transform 0.3s ease;
+                                border: 1px solid #eee;
+                            }
+                            .product-card:hover {
+                                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                                transform: translateY(-5px);
+                                z-index: 2;
+                            }
+                        </style>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Feature Blocks (LaptopAZ style) -->
+        <div class="container-fluid px-4 mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card p-3 border-0 shadow-sm rounded-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-truck fs-1" style="color: var(--accent-color);"></i>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-uppercase">GIAO HÀNG SIÊU TỐC</h6>
+                                <small class="text-muted">Miễn phí cho đơn hàng từ 2 triệu</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 border-0 shadow-sm rounded-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-shield-check fs-1" style="color: var(--accent-color);"></i>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-uppercase">BẢO HÀNH CHÍNH HÃNG</h6>
+                                <small class="text-muted">Lỗi 1 đổi 1 trong vòng 30 ngày</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 border-0 shadow-sm rounded-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-credit-card fs-1" style="color: var(--accent-color);"></i>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-uppercase">TRẢ GÓP 0%</h6>
+                                <small class="text-muted">Duyệt hồ sơ nhanh chóng</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hot Products Block -->
+        <div class="container-fluid px-4 mb-5">
+            <div class="bg-white p-4 border-top border-4 rounded-4 shadow-sm"
+                style="border-color: var(--header-bg) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <h4 class="fw-bold text-uppercase m-0" style="color: var(--header-bg);">SẢN PHẨM MỚI NHẤT</h4>
+                    <a href="/products" class="text-decoration-none small text-primary fst-italic">Xem tất cả <i
+                            class="bi bi-chevron-double-right"></i></a>
+                </div>
+
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-2">
+                    <div class="col" th:each="product : ${latestProducts}">
+                        <div class="card h-100 product-card p-2">
+                            <div class="position-absolute top-0 start-0 m-2 z-1">
+                                <span class="badge bg-danger">-10%</span>
+                            </div>
+                            <div class="product-img-wrapper d-flex justify-content-center p-0 mb-2" style="height: 180px;">
+                                <a th:href="@{'/products/' + ${product.slug}}" class="d-flex w-100 h-100 align-items-center justify-content-center">
+                                    <img th:if="${#lists.isEmpty(product.images)}" th:src="@{/images/placeholder.jpg}" class="card-img-top product-img" th:alt="${product.name}" style="object-fit: contain; max-height: 100%;">
+                                    <th:block th:unless="${#lists.isEmpty(product.images)}">
+                                        <img th:each="img : ${product.images}" th:if="${img.isPrimary}" th:src="@{'/uploads/products/' + ${img.imageUrl}}" class="card-img-top product-img" th:alt="${product.name}" style="object-fit: contain; max-height: 100%;">
+                                    </th:block>
+                                </a>
+                            </div>
+                            <div class="card-body p-1 d-flex flex-column">
+                                <a th:href="@{'/products/' + ${product.slug}}" class="text-decoration-none"
+                                    th:title="${product.name}">
+                                    <h5 class="product-title" th:text="${product.name}">Tên sản phẩm</h5>
+                                </a>
+
+                                <div class="mt-auto">
+                                    <!-- Old price (dummy calculation 10% higher for UI effect) -->
+                                    <div class="price-old mb-1"
+                                        th:text="${#numbers.formatDecimal(product.price * 1.1, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        0 đ</div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="price-new"
+                                            th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0
+                                            đ</span>
+                                    </div>
+                                    <div class="mt-2 p-1 bg-light border rounded small">
+                                        <i class="bi bi-gift-fill text-danger me-1"></i> Tặng Balo Laptop cao cấp, Chuột
+                                        không dây
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" th:if="${#lists.isEmpty(latestProducts)}">
+                        <p class="text-center text-muted py-5">Đang cập nhật sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
