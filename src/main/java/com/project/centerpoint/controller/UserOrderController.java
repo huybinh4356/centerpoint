@@ -34,7 +34,7 @@ public class UserOrderController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         var order = orderService.getOrderById(id);
         
-        if (order == null || !order.getUser().getId().equals(user.getId())) {
+        if (order == null || order.getUser() == null || !order.getUser().getId().equals(user.getId())) {
             return "redirect:/orders";
         }
         

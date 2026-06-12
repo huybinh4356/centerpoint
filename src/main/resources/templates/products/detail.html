@@ -253,27 +253,27 @@
                             </div>
                         </div>
 
-                        <form th:action="@{/cart/add}" method="post" class="mb-3">
+                        <form method="post" class="mb-3">
                             <input type="hidden" name="productId" th:value="${product.id}">
                             <input type="hidden" name="quantity" value="1">
                             
                             <div class="row g-2">
                                 <div class="col-12">
-                                    <button type="submit" class="btn-buy-now" th:disabled="${product.stock == 0}">
+                                    <button type="submit" th:formaction="@{/cart/buy-now}" class="btn-buy-now" th:disabled="${product.stock == 0}">
                                         MUA NGAY
                                         <small>Giao tận nơi hoặc nhận tại cửa hàng</small>
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <button type="button" class="btn-installment">
-                                        TRẢ GÓP 0%
-                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Duyệt hồ sơ 5 phút</small>
+                                    <button type="submit" th:formaction="@{/cart/add}" class="btn-installment" th:disabled="${product.stock == 0}" style="background-color: #0d6efd;">
+                                        THÊM VÀO GIỎ HÀNG
+                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Tiếp tục mua sắm</small>
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <button type="button" class="btn-installment">
-                                        TRẢ GÓP QUA THẺ
-                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Visa, Mastercard, JCB</small>
+                                    <button type="submit" th:formaction="@{/cart/buy-now}" class="btn-installment" th:disabled="${product.stock == 0}" style="background-color: #0f172a;">
+                                        THANH TOÁN THẺ VISA
+                                        <small style="display:block; font-size: 0.8rem; font-weight: normal; text-transform: none; margin-top: 3px;">Mua thẳng, Không trả góp</small>
                                     </button>
                                 </div>
                             </div>

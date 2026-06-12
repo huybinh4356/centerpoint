@@ -49,6 +49,16 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    @PostMapping("/buy-now")
+    public String buyNow(@RequestParam Long productId,
+            @RequestParam(defaultValue = "1") int quantity,
+            @AuthenticationPrincipal UserDetails userDetails,
+            HttpSession session) {
+        User user = getCurrentUser(userDetails);
+        cartService.addItem(user, session.getId(), productId, quantity);
+        return "redirect:/checkout";
+    }
+
     @PostMapping("/update")
     public String updateQuantity(@RequestParam Long itemId,
             @RequestParam int quantity,

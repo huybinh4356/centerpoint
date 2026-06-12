@@ -11,18 +11,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #f0f2f5;
-            --header-bg: #1E3A8A;
-            /* Deep Royal Blue */
-            --nav-bg: #2563EB;
-            /* Bright Tech Blue */
-            --accent-color: #F97316;
-            /* Vibrant Orange */
+            --primary-bg: #f8fafc;
+            --header-bg: #0f172a; /* Deep Premium Slate */
+            --nav-bg: #1e293b; /* Secondary Slate */
+            --accent-color: #38bdf8; /* Vibrant Sky Blue */
+            --accent-hover: #0284c7;
             --card-bg: #ffffff;
-            --text-color: #1f2937;
-            --price-color: #dc2626;
-            /* Deep Red for prices */
-            --border-color: #e5e7eb;
+            --text-color: #334155;
+            --price-color: #ef4444;
+            --border-color: #e2e8f0;
+            --transition-speed: 0.3s;
         }
 
         body {
@@ -36,70 +34,156 @@
         .top-bar {
             font-size: 0.85rem;
             background-color: var(--card-bg) !important;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .top-bar a:hover {
-            color: var(--nav-bg) !important;
+            color: var(--accent-hover) !important;
         }
 
         /* Header */
+        .header-main {
+            background-color: var(--header-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            z-index: 40;
+        }
+
         .navbar-brand {
             font-weight: 900;
-            font-size: 2rem;
-            letter-spacing: -0.5px;
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+            transition: transform var(--transition-speed);
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.02);
         }
 
         .header-search .form-control {
-            border: none;
-            border-radius: 8px 0 0 8px;
-            /* Bo tròn hơn */
-            padding: 10px 15px;
+            border: 2px solid transparent;
+            border-radius: 20px 0 0 20px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all var(--transition-speed);
+        }
+
+        .header-search .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .header-search .form-control:focus {
+            background-color: rgba(255, 255, 255, 1);
+            color: var(--text-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+            outline: none;
+        }
+
+        .header-search .form-control:focus + .btn {
+            background-color: var(--accent-color);
+            color: white;
         }
 
         .header-search .btn {
-            border-radius: 0 8px 8px 0;
-            /* Bo tròn hơn */
-            color: var(--text-color);
-            background-color: #f8f9fa;
+            border-radius: 0 20px 20px 0;
+            color: var(--header-bg);
+            background-color: var(--accent-color);
+            border: none;
+            padding: 10px 25px;
+            transition: all var(--transition-speed);
+        }
+
+        .header-search .btn:hover {
+            background-color: var(--accent-hover);
+            color: white;
+        }
+
+        /* Action Icons */
+        .header-action-icon {
+            transition: transform var(--transition-speed), color var(--transition-speed);
+        }
+        .header-action-link:hover .header-action-icon {
+            transform: translateY(-3px) scale(1.1);
+            color: #ffffff !important;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
         }
 
         /* Nav */
-        .main-nav {
-            background-color: #333333;
+        .main-nav-wrapper {
+            background-color: var(--nav-bg);
+            position: relative;
+            z-index: 30;
         }
 
         .main-nav .nav-link {
-            color: #ffffff;
+            color: #e2e8f0;
             font-size: 0.95rem;
+            font-weight: 600;
             text-transform: uppercase;
-            transition: all 0.2s;
+            letter-spacing: 0.5px;
+            transition: all var(--transition-speed);
+            position: relative;
+        }
+        
+        .main-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--accent-color);
+            transition: all var(--transition-speed);
+            transform: translateX(-50%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .main-nav .nav-item:not(.dropdown):hover .nav-link::after {
+            width: 100%;
         }
 
         .main-nav .nav-link:hover {
-            background-color: var(--header-bg);
+            color: #ffffff;
+            background-color: rgba(255,255,255,0.05);
         }
 
         @media (min-width: 992px) {
             .main-nav .dropdown:hover .dropdown-menu {
                 display: block;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
+                animation: fadeIn 0.2s ease-in-out;
             }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-nav .dropdown-item {
+            transition: all 0.2s;
+            font-weight: 500;
         }
 
         .main-nav .dropdown-item:hover {
-            background-color: #f0f2f5;
-            color: var(--nav-bg);
-            padding-left: 1.5rem;
-            transition: all 0.2s;
+            background-color: var(--primary-bg);
+            color: var(--accent-hover);
+            padding-left: 1.8rem;
         }
 
         /* Product Cards */
         .product-card {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            /* Bo tròn thẻ sản phẩm */
+            border-radius: 16px;
             background: var(--card-bg);
             color: var(--text-color);
             position: relative;
@@ -107,9 +191,9 @@
         }
 
         .product-card:hover {
-            border-color: var(--nav-bg);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
-            transform: translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.1);
+            transform: translateY(-8px);
         }
 
         .product-img-wrapper {
@@ -195,7 +279,7 @@
     </div>
 
     <!-- Main Header -->
-    <header class="header-main py-2" style="background-color: var(--header-bg);">
+    <header class="header-main py-3">
         <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-3 px-4">
             <!-- Logo -->
             <a class="navbar-brand text-white m-0" href="/">
@@ -203,50 +287,50 @@
             </a>
 
             <!-- Search -->
-            <div class="flex-grow-1 header-search" style="max-width: 500px;">
-                <form action="/products" method="get" class="d-flex w-100">
+            <div class="flex-grow-1 header-search" style="max-width: 600px;">
+                <form action="/products" method="get" class="d-flex w-100 shadow-sm rounded-pill">
                     <input type="text" name="keyword" class="form-control"
                         placeholder="Bạn cần tìm laptop, phụ kiện...">
-                    <button class="btn btn-light px-4 fw-bold" type="submit"><i class="bi bi-search"></i></button>
+                    <button class="btn px-4 fw-bold" type="submit"><i class="bi bi-search"></i></button>
                 </form>
             </div>
 
             <!-- Actions -->
             <div class="d-flex align-items-center gap-4">
-                <div class="text-white d-flex align-items-center d-none d-lg-flex">
-                    <i class="bi bi-telephone-fill fs-3 me-2" style="color: var(--accent-color);"></i>
+                <div class="text-white d-flex align-items-center d-none d-lg-flex header-action-link" style="cursor: pointer;">
+                    <i class="bi bi-telephone-fill fs-3 me-2 header-action-icon" style="color: var(--accent-color);"></i>
                     <div class="lh-sm">
                         <small class="d-block text-white-50" style="font-size: 12px;">Gọi mua hàng</small>
-                        <strong class="fs-5" style="color: var(--accent-color);">1900 1234</strong>
+                        <strong class="fs-5 text-white">1900 1234</strong>
                     </div>
                 </div>
 
-                <a href="/compare" class="text-white text-decoration-none d-flex align-items-center position-relative me-4">
-                    <i class="bi bi-ui-checks fs-3 me-2" style="color: var(--accent-color);"></i>
+                <a href="/compare" class="text-white text-decoration-none d-flex align-items-center position-relative me-4 header-action-link">
+                    <i class="bi bi-ui-checks fs-3 me-2 header-action-icon" style="color: var(--accent-color);"></i>
                     <div class="lh-sm d-none d-sm-block">
                         <small class="d-block text-white-50" style="font-size: 12px;">So sánh</small>
-                        <span class="badge text-white position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill"
-                              style="background-color: var(--accent-color);" th:text="${compareItemCount}">0</span>
+                        <span class="badge position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill shadow"
+                              style="background-color: var(--accent-color); color: #0f172a;" th:text="${compareItemCount}">0</span>
                     </div>
                 </a>
 
-                <a href="/cart" class="text-white text-decoration-none d-flex align-items-center position-relative">
-                    <i class="bi bi-cart3 fs-3 me-2" style="color: var(--accent-color);"></i>
+                <a href="/cart" class="text-white text-decoration-none d-flex align-items-center position-relative header-action-link">
+                    <i class="bi bi-cart3 fs-3 me-2 header-action-icon" style="color: var(--accent-color);"></i>
                     <div class="lh-sm d-none d-sm-block">
                         <small class="d-block text-white-50" style="font-size: 12px;">Giỏ hàng</small>
                         <span
-                            class="badge text-white position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill"
-                            style="background-color: var(--accent-color);" th:text="${cartItemCount}">0</span>
+                            class="badge position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill shadow"
+                            style="background-color: var(--accent-color); color: #0f172a;" th:text="${cartItemCount}">0</span>
                     </div>
                 </a>
 
                 <!-- Toast for Add to Cart Success -->
                 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-                    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+                    <div id="cartToast" class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert"
                         aria-live="assertive" aria-atomic="true">
                         <div class="d-flex">
-                            <div class="toast-body">
-                                <i class="bi bi-check-circle me-2"></i> Đã thêm sản phẩm vào giỏ hàng!
+                            <div class="toast-body fw-medium">
+                                <i class="bi bi-check-circle-fill me-2"></i> Đã thêm sản phẩm vào giỏ hàng!
                             </div>
                             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
                                 aria-label="Close"></button>
@@ -254,29 +338,29 @@
                     </div>
                 </div>
 
-                <div class="dropdown" sec:authorize="isAuthenticated()">
+                <div class="dropdown header-action-link" sec:authorize="isAuthenticated()">
                     <a href="#" class="text-white text-decoration-none d-flex align-items-center"
                         data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle fs-3 me-2"></i>
+                        <i class="bi bi-person-circle fs-3 me-2 header-action-icon" style="color: var(--accent-color);"></i>
                         <div class="lh-sm d-none d-sm-block">
                             <small class="d-block text-white-50" style="font-size: 12px;">Tài khoản</small>
                         </div>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2">
-                        <li><a class="dropdown-item" href="/profile">Tài khoản của tôi</a></li>
-                        <li><a class="dropdown-item" href="/orders">Đơn hàng</a></li>
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item text-danger fw-bold"
-                                href="/admin/dashboard"><i class="bi bi-shield-lock me-2"></i> Trang Quản trị</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-3 py-2" style="animation: fadeIn 0.2s ease-in-out;">
+                        <li><a class="dropdown-item py-2 fw-medium" href="/profile"><i class="bi bi-person me-2 text-secondary"></i>Tài khoản của tôi</a></li>
+                        <li><a class="dropdown-item py-2 fw-medium" href="/orders"><i class="bi bi-box-seam me-2 text-secondary"></i>Đơn hàng</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item py-2 text-danger fw-bold"
+                                href="/admin/dashboard"><i class="bi bi-shield-lock me-2"></i>Trang Quản trị</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="/logout">Đăng xuất</a></li>
+                        <li><a class="dropdown-item py-2 text-danger fw-medium" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
                     </ul>
                 </div>
 
-                <a href="/login" class="text-white text-decoration-none d-flex align-items-center"
+                <a href="/login" class="text-white text-decoration-none d-flex align-items-center header-action-link"
                     sec:authorize="!isAuthenticated()">
-                    <i class="bi bi-person-circle fs-3 me-2"></i>
+                    <i class="bi bi-person-circle fs-3 me-2 header-action-icon" style="color: var(--accent-color);"></i>
                     <div class="lh-sm d-none d-sm-block">
                         <small class="d-block text-white-50" style="font-size: 12px;">Đăng nhập</small>
                     </div>
@@ -286,18 +370,18 @@
     </header>
 
     <!-- Secondary Nav -->
-    <nav class="navbar navbar-expand-lg py-0 shadow-sm" style="background-color: var(--nav-bg);">
+    <nav class="navbar navbar-expand-lg py-0 main-nav-wrapper">
         <div class="container-fluid px-4">
-            <button class="navbar-toggler my-2 bg-light" type="button" data-bs-toggle="collapse"
+            <button class="navbar-toggler my-2 bg-light border-0" type="button" data-bs-toggle="collapse"
                 data-bs-target="#bottomNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="bottomNav">
                 <ul class="navbar-nav w-100 main-nav">
-                    <li class="nav-item dropdown" style="background-color: var(--header-bg);">
-                        <a class="nav-link px-4 fw-bold dropdown-toggle text-white d-flex align-items-center" href="#"
-                            id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-list fs-4 me-2" style="color: var(--accent-color);"></i> DANH MỤC SẢN PHẨM
+                    <li class="nav-item dropdown" style="background-color: var(--accent-color);">
+                        <a class="nav-link px-4 fw-bold dropdown-toggle d-flex align-items-center" href="#"
+                            id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #0f172a; padding-top: 14px; padding-bottom: 14px;">
+                            <i class="bi bi-list fs-4 me-2"></i> DANH MỤC SẢN PHẨM
                         </a>
                         <ul class="dropdown-menu border-0 shadow-lg mt-0 py-2" aria-labelledby="categoryDropdown"
                             style="min-width: 280px; border-radius: 0 0 12px 12px;">
@@ -319,21 +403,20 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item border-start border-light border-opacity-25">
-                        <a class="nav-link px-4 fw-medium text-white" href="/products"><i class="bi bi-fire me-1"
-                                style="color: var(--accent-color);"></i> KHUYẾN MÃI HOT</a>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link px-4 py-3 text-white d-flex align-items-center" href="/products"><i class="bi bi-fire fs-5 me-2 text-warning"></i> KHUYẾN MÃI HOT</a>
                     </li>
-                    <li class="nav-item border-start border-light border-opacity-25">
-                        <a class="nav-link px-4 fw-medium text-white" href="/products"><i
-                                class="bi bi-stars text-info me-1"></i> SẢN PHẨM MỚI</a>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link px-4 py-3 text-white d-flex align-items-center" href="/products"><i
+                                class="bi bi-stars fs-5 text-info me-2"></i> SẢN PHẨM MỚI</a>
                     </li>
-                    <li class="nav-item border-start border-light border-opacity-25">
-                        <a class="nav-link px-4 fw-medium text-white" href="/warranty"><i
-                                class="bi bi-shield-check text-white me-1"></i> BẢO HÀNH</a>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link px-4 py-3 text-white d-flex align-items-center" href="/warranty"><i
+                                class="bi bi-shield-check fs-5 text-success me-2"></i> BẢO HÀNH</a>
                     </li>
-                    <li class="nav-item border-start border-light border-opacity-25">
-                        <a class="nav-link px-4 fw-medium text-white" href="/guide"><i
-                                class="bi bi-journal-text text-white me-1"></i> HƯỚNG DẪN</a>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link px-4 py-3 text-white d-flex align-items-center" href="/guide"><i
+                                class="bi bi-journal-text fs-5 text-light me-2"></i> HƯỚNG DẪN</a>
                     </li>
                 </ul>
             </div>
@@ -378,7 +461,7 @@
             </div>
             <hr class="border-secondary mt-2 mb-3">
             <div class="text-center">
-                <p class="mb-0 small">&copy; 2026 CenterPoint. Cung cấp bởi Antigravity.</p>
+                <p class="mb-0 small">&copy; 2026 CenterPoint.</p>
             </div>
         </div>
     </footer>

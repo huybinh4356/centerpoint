@@ -67,9 +67,14 @@
                         <div class="row">
                             <div class="col-md-6 border-end">
                                 <h6 class="fw-bold text-muted mb-3">Thông tin tài khoản</h6>
-                                <p class="mb-1"><strong>Họ Tên:</strong> <span th:text="${order.user.fullName}"></span></p>
-                                <p class="mb-1"><strong>Email:</strong> <span th:text="${order.user.email}"></span></p>
-                                <p class="mb-0"><strong>ID:</strong> #<span th:text="${order.user.id}"></span></p>
+                                <div th:if="${order.user != null}">
+                                    <p class="mb-1"><strong>Họ Tên:</strong> <span th:text="${order.user.fullName}"></span></p>
+                                    <p class="mb-1"><strong>Email:</strong> <span th:text="${order.user.email}"></span></p>
+                                    <p class="mb-0"><strong>ID:</strong> #<span th:text="${order.user.id}"></span></p>
+                                </div>
+                                <div th:if="${order.user == null}">
+                                    <p class="mb-0 text-muted"><em>Khách vãng lai (Không có tài khoản)</em></p>
+                                </div>
                             </div>
                             <div class="col-md-6 ps-md-4">
                                 <h6 class="fw-bold text-muted mb-3">Địa chỉ nhận hàng</h6>

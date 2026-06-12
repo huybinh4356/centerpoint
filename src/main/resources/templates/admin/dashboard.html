@@ -83,7 +83,7 @@
                     <tbody>
                         <tr th:each="order : ${recentOrders}">
                             <td><a th:href="@{'/admin/orders/' + ${order.id}}" th:text="'#' + ${order.id}">#1</a></td>
-                            <td th:text="${order.user.fullName}">Name</td>
+                            <td th:text="${order.user != null ? order.user.fullName : 'Khách vãng lai'}">Name</td>
                             <td class="text-danger fw-bold" th:text="${#numbers.formatDecimal(order.totalAmount - order.discountAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'">10,000,000đ</td>
                             <td>
                                 <span class="badge" th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning text-dark' : (order.status.name() == 'DELIVERED' ? 'bg-success' : 'bg-primary')}" th:text="${order.status}">PENDING</span>
