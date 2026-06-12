@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Form Mã Giảm Giá</title></head>
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" th:text="${promotion.id != null ? 'Sửa Mã Giảm Giá' : 'Thêm Mã Mới'}">Thêm Mã Mới</h2>
+            <a th:href="@{/admin/promotions}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/admin/promotions/save}" th:object="${promotion}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mã Code (CODE) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{code}" required style="text-transform: uppercase;">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" th:field="*{active}" id="isActive">
+                                <label class="form-check-label" for="isActive">Kích hoạt</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Cấu hình Giảm giá</h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
+                                    <select class="form-select" th:field="*{discountType}" id="discountType" required onchange="toggleDiscountFields()">
+                                        <option value="PERCENT">Giảm theo Phần trăm (%)</option>
+                                        <option value="AMOUNT">Giảm theo Số tiền (VNĐ)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3" id="percentDiv">
+                                    <label class="form-label">Phần trăm giảm (%) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" th:field="*{discountPercent}" min="0" max="100">
+                                </div>
+                                <div class="col-md-4 mb-3" id="amountDiv" style="display: none;">
+                                    <label class="form-label">Số tiền giảm (VNĐ) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" th:field="*{discountAmount}" min="0">
+                                </div>
+                                <div class="col-md-4 mb-3" id="maxDiscountDiv">
+                                    <label class="form-label">Giảm tối đa (VNĐ) <span class="text-muted">(Để trống: Không giới hạn)</span></label>
+                                    <input type="number" class="form-control" th:field="*{maxDiscount}" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Điều kiện & Giới hạn</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Giá trị đơn hàng tối thiểu (VNĐ)</label>
+                                    <input type="number" class="form-control" th:field="*{minOrderValue}" min="0">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Giới hạn số lượt dùng <span class="text-muted">(Để trống: Không giới hạn)</span></label>
+                                    <input type="number" class="form-control" th:field="*{usageLimit}" min="0">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Thời gian bắt đầu</label>
+                                    <input type="datetime-local" class="form-control" th:field="*{startDate}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Thời gian kết thúc</label>
+                                    <input type="datetime-local" class="form-control" th:field="*{endDate}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Lưu Mã Giảm Giá</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleDiscountFields() {
+            var type = document.getElementById('discountType').value;
+            if (type === 'PERCENT') {
+                document.getElementById('percentDiv').style.display = 'block';
+                document.getElementById('maxDiscountDiv').style.display = 'block';
+                document.getElementById('amountDiv').style.display = 'none';
+            } else {
+                document.getElementById('percentDiv').style.display = 'none';
+                document.getElementById('maxDiscountDiv').style.display = 'none';
+                document.getElementById('amountDiv').style.display = 'block';
+            }
+        }
+        // Run on load
+        document.addEventListener("DOMContentLoaded", toggleDiscountFields);
+    </script>
+</body>
+</html>

@@ -221,6 +221,15 @@
                     </div>
                 </div>
 
+                <a href="/compare" class="text-white text-decoration-none d-flex align-items-center position-relative me-4">
+                    <i class="bi bi-ui-checks fs-3 me-2" style="color: var(--accent-color);"></i>
+                    <div class="lh-sm d-none d-sm-block">
+                        <small class="d-block text-white-50" style="font-size: 12px;">So sánh</small>
+                        <span class="badge text-white position-absolute top-0 start-0 translate-middle mt-2 ms-4 rounded-pill"
+                              style="background-color: var(--accent-color);" th:text="${compareItemCount}">0</span>
+                    </div>
+                </a>
+
                 <a href="/cart" class="text-white text-decoration-none d-flex align-items-center position-relative">
                     <i class="bi bi-cart3 fs-3 me-2" style="color: var(--accent-color);"></i>
                     <div class="lh-sm d-none d-sm-block">

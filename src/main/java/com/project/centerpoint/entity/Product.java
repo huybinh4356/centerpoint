@@ -35,7 +35,12 @@ public class Product {
     private int price;
 
     @Column(name = "discount_percent")
-    private int discountPercent;
+    @Builder.Default
+    private Integer discountPercent = 0;
+
+    public Integer getDiscountPercent() {
+        return discountPercent == null ? 0 : discountPercent;
+    }
 
     @Column(nullable = false)
     private int stock;
@@ -63,7 +68,32 @@ public class Product {
     private java.util.List<ProductImage> images;
 
     @Column(name = "avg_rating")
-    private double avgRating;
+    @Builder.Default
+    private Double avgRating = 0.0;
+
+    @Column(name = "review_count")
+    @Builder.Default
+    private Integer reviewCount = 0;
+
+    public Double getAvgRating() {
+        return avgRating == null ? 0.0 : avgRating;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount == null ? 0 : reviewCount;
+    }
+
+    public String getPrimaryImageUrl() {
+        if (images != null && !images.isEmpty()) {
+            for (ProductImage img : images) {
+                if (img.isPrimary()) {
+                    return "/uploads/products/" + img.getImageUrl();
+                }
+            }
+            return "/uploads/products/" + images.get(0).getImageUrl();
+        }
+        return null;
+    }
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

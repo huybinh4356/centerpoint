@@ -6,6 +6,7 @@ import com.project.centerpoint.entity.Category;
 import com.project.centerpoint.entity.User;
 import com.project.centerpoint.service.CartService;
 import com.project.centerpoint.service.CategoryService;
+import com.project.centerpoint.service.CompareService;
 import com.project.centerpoint.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class GlobalControllerAdvice {
     private final CategoryService categoryService;
     private final CartService cartService;
     private final UserService userService;
+    private final CompareService compareService;
 
     @ModelAttribute("globalCategories")
     public List<Category> populateCategories() {
@@ -40,5 +42,10 @@ public class GlobalControllerAdvice {
             return cart.getItems().stream().mapToInt(CartItem::getQuantity).sum();
         }
         return 0;
+    }
+
+    @ModelAttribute("compareItemCount")
+    public int populateCompareItemCount(HttpSession session) {
+        return compareService.getCompareCount(session);
     }
 }

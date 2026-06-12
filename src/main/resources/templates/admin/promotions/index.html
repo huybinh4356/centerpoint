@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::div})}">
+<head><title>Quản lý Mã Giảm Giá</title></head>
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Danh Sách Mã Giảm Giá</h2>
+            <a th:href="@{/admin/promotions/create}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Thêm Mã Mới</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Mã CODE</th>
+                                <th>Chi tiết giảm</th>
+                                <th>Đơn tối thiểu</th>
+                                <th>Lượt dùng</th>
+                                <th>Hạn sử dụng</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="promo : ${promotions}">
+                                <td th:text="${promo.id}">1</td>
+                                <td><strong class="text-primary" th:text="${promo.code}">TET2026</strong></td>
+                                <td>
+                                    <span th:if="${promo.discountType == 'PERCENT'}" th:text="'Giảm ' + ${promo.discountPercent} + '%'"></span>
+                                    <span th:if="${promo.discountType == 'AMOUNT'}" th:text="'Giảm ' + ${#numbers.formatDecimal(promo.discountAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                                    <br>
+                                    <small th:if="${promo.maxDiscount != null && promo.maxDiscount > 0}" class="text-muted" th:text="'(Tối đa ' + ${#numbers.formatDecimal(promo.maxDiscount, 0, 'COMMA', 0, 'POINT')} + 'đ)'"></small>
+                                </td>
+                                <td><span th:if="${promo.minOrderValue != null}" th:text="${#numbers.formatDecimal(promo.minOrderValue, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span></td>
+                                <td>
+                                    <span th:text="${promo.usedCount}"></span> / <span th:text="${promo.usageLimit != null ? promo.usageLimit : '∞'}"></span>
+                                </td>
+                                <td>
+                                    Từ: <span th:text="${#temporals.format(promo.startDate, 'dd/MM/yyyy HH:mm')}"></span><br>
+                                    Đến: <span th:text="${#temporals.format(promo.endDate, 'dd/MM/yyyy HH:mm')}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${promo.isActive}" class="badge bg-success">Hoạt động</span>
+                                    <span th:unless="${promo.isActive}" class="badge bg-secondary">Tạm dừng</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/promotions/edit/{id}(id=${promo.id})}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                    <a th:href="@{/admin/promotions/delete/{id}(id=${promo.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(promotions)}">
+                                <td colspan="8" class="text-center py-4 text-muted">Chưa có mã giảm giá nào.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

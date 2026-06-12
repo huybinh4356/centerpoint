@@ -11,6 +11,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserOrderByOrderDateDesc(User user);
     List<Order> findAllByOrderByOrderDateDesc();
+    List<Order> findByPaymentMethodInOrderByOrderDateDesc(List<String> paymentMethods);
 
     @org.springframework.data.jpa.repository.Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.status != 'CANCELLED'")
     Integer calculateTotalRevenue();

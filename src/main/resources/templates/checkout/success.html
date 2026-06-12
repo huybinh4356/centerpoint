@@ -12,7 +12,7 @@
                     <h5 class="alert-heading fw-bold"><i class="bi bi-info-circle me-2"></i>Hướng dẫn thanh toán</h5>
                     <p>Quý khách vui lòng quét mã QR dưới đây để thực hiện thanh toán. Nội dung chuyển khoản: <strong>Đơn hàng #<span th:text="${orderId}"></span></strong></p>
                     <div class="text-center mt-3 bg-white p-3 rounded d-inline-block">
-                        <img th:src="@{/uploads/system/qr-code.png}" alt="QR Code" class="img-fluid" style="max-width: 250px;" onerror="this.style.display='none'">
+                        <img th:src="'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + ${paymentMethod} + '-' + ${orderId}" alt="QR Code" class="img-fluid" style="max-width: 250px;">
                     </div>
                     <hr>
                     <p class="mb-0 small">Sau khi thanh toán thành công, đơn hàng của bạn sẽ được xử lý sớm nhất.</p>

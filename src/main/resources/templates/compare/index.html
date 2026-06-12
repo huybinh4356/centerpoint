@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::main})}">
+<head>
+    <title>So sánh sản phẩm - CenterPoint</title>
+</head>
+<body>
+<main class="container-fluid px-4 py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary"><i class="bi bi-ui-checks"></i> So sánh sản phẩm</h2>
+        <a th:if="${not #lists.isEmpty(compareProducts)}" href="/compare/clear" class="btn btn-outline-danger">
+            <i class="bi bi-trash"></i> Xóa tất cả
+        </a>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${info}" class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i><span th:text="${info}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${#lists.isEmpty(compareProducts)}" class="text-center py-5 bg-white rounded-3 shadow-sm border">
+        <i class="bi bi-laptop text-muted mb-3" style="font-size: 4rem;"></i>
+        <h4 class="text-muted">Danh sách so sánh trống</h4>
+        <p class="text-muted mb-4">Vui lòng chọn sản phẩm để so sánh.</p>
+        <a href="/products" class="btn btn-primary px-4 py-2 fw-medium">Tiếp tục mua sắm</a>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(compareProducts)}" class="table-responsive bg-white rounded-3 shadow-sm border">
+        <table class="table table-bordered mb-0 text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 15%;" class="text-start align-middle px-4">
+                        <span class="text-muted fw-bold text-uppercase">Thông số</span>
+                    </th>
+                    <th th:each="product : ${compareProducts}" style="width: 28%;">
+                        <div class="position-relative p-2">
+                            <a th:href="@{'/compare/remove/' + ${product.id}}" 
+                               class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle" 
+                               style="width: 28px; height: 28px; padding: 0; line-height: 26px;"
+                               title="Xóa khỏi so sánh">
+                                <i class="bi bi-x"></i>
+                            </a>
+                            <div class="mb-3 mt-2" style="height: 180px;">
+                                <img th:if="${not #lists.isEmpty(product.images)}" 
+                                     th:src="@{'/uploads/products/' + ${product.images[0].imageUrl}}" 
+                                     class="img-fluid h-100 object-fit-contain" alt="Hình sản phẩm">
+                                <img th:if="${#lists.isEmpty(product.images)}" 
+                                     src="https://via.placeholder.com/400x300?text=No+Image" 
+                                     class="img-fluid h-100 object-fit-contain" alt="No Image">
+                            </div>
+                            <h5 class="product-title fw-bold">
+                                <a th:href="@{'/products/' + ${product.slug}}" class="text-decoration-none text-dark" th:text="${product.name}">Tên sản phẩm</a>
+                            </h5>
+                            <div class="price-new text-danger fs-4 mt-2" 
+                                 th:text="${#numbers.formatDecimal(product.price - (product.price * product.discountPercent / 100), 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                            <div th:if="${product.discountPercent > 0}" class="price-old text-muted text-decoration-line-through small" 
+                                 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                            
+                            <form th:action="@{/cart/add}" method="post" class="mt-3">
+                                <input type="hidden" name="productId" th:value="${product.id}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary w-100 fw-medium">
+                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                </button>
+                            </form>
+                        </div>
+                    </th>
+                    <!-- Render empty columns if less than 3 products -->
+                    <th th:if="${#lists.size(compareProducts) < 2}">
+                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-4" style="min-height: 300px; border: 2px dashed #dee2e6; border-radius: 8px;">
+                            <i class="bi bi-plus-circle fs-1 mb-2"></i>
+                            <span>Thêm sản phẩm</span>
+                        </div>
+                    </th>
+                    <th th:if="${#lists.size(compareProducts) < 3}">
+                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-4" style="min-height: 300px; border: 2px dashed #dee2e6; border-radius: 8px;">
+                            <i class="bi bi-plus-circle fs-1 mb-2"></i>
+                            <span>Thêm sản phẩm</span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Hãng sản xuất</td>
+                    <td th:each="product : ${compareProducts}" class="fw-medium text-dark" th:text="${product.brand.name}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Vi xử lý (CPU)</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.cpu != null ? product.cpu : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Bộ nhớ RAM</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.ram != null ? product.ram : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Ổ cứng</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.storage != null ? product.storage : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Màn hình</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.screen != null ? product.screen : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Card màn hình (VGA)</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.vga != null ? product.vga : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Hệ điều hành</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.os != null ? product.os : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+                <tr>
+                    <td class="text-start px-4 fw-medium text-muted bg-light">Trọng lượng</td>
+                    <td th:each="product : ${compareProducts}" th:text="${product.weight != null ? product.weight : '-'}"></td>
+                    <td th:if="${#lists.size(compareProducts) < 2}">-</td>
+                    <td th:if="${#lists.size(compareProducts) < 3}">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+</body>
+</html>

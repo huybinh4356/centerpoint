@@ -93,6 +93,13 @@ public class ProductService {
     }
 
     @Transactional
+    public void updateProductDiscount(Long id, int discountPercent) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setDiscountPercent(discountPercent);
+        productRepository.save(product);
+    }
+
+    @Transactional
     public void importProductsFromJson(MultipartFile file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         try (InputStream inputStream = file.getInputStream()) {

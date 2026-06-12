@@ -19,8 +19,15 @@ public class Promotion {
     @Column(nullable = false, unique = true)
     private String code;
 
+    @Column(name = "discount_type", nullable = false)
+    @Builder.Default
+    private String discountType = "PERCENT"; // "PERCENT" or "AMOUNT"
+
     @Column(name = "discount_percent")
     private Integer discountPercent;
+
+    @Column(name = "discount_amount")
+    private Integer discountAmount;
 
     @Column(name = "max_discount")
     private Integer maxDiscount;

@@ -6,7 +6,7 @@
         
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         
-        <form th:action="@{/checkout}" method="post">
+        <form th:action="@{/checkout}" method="post" id="checkoutForm">
             <div class="row">
                 <div class="col-lg-7 mb-4">
                     <div class="card shadow-sm border-0 mb-4">
@@ -48,12 +48,40 @@
                                 </label>
                                 <div class="text-muted small mt-1">Thực hiện chuyển khoản sau khi đặt hàng thành công.</div>
                             </div>
-                            <div class="form-check">
+                            <div class="form-check mb-3">
                                 <input class="form-check-input" type="radio" name="paymentMethod" id="momo" value="MOMO">
                                 <label class="form-check-label fw-bold" for="momo">
                                     Ví điện tử MoMo
                                 </label>
                                 <div class="text-muted small mt-1">Sử dụng app MoMo để quét mã QR thanh toán.</div>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="visa" value="VISA">
+                                <label class="form-check-label fw-bold" for="visa">
+                                    Thẻ tín dụng / Ghi nợ (Visa, MasterCard)
+                                </label>
+                                <div class="text-muted small mt-1">Thanh toán an toàn qua cổng thẻ quốc tế.</div>
+                                
+                                <div id="visaForm" class="mt-3 p-3 border rounded bg-light" style="display: none;">
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Số thẻ</label>
+                                        <input type="text" id="visaCardNumber" class="form-control form-control-sm" placeholder="XXXX XXXX XXXX XXXX">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold">Tên in trên thẻ</label>
+                                        <input type="text" id="visaCardName" class="form-control form-control-sm" placeholder="NGUYEN VAN A">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">Ngày hết hạn</label>
+                                            <input type="text" id="visaCardExpiry" class="form-control form-control-sm" placeholder="MM/YY">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold">CVV</label>
+                                            <input type="password" id="visaCvv" class="form-control form-control-sm" placeholder="***">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,15 +112,20 @@
                             <div class="mb-4">
                                 <label class="form-label">Mã giảm giá</label>
                                 <div class="input-group">
-                                    <input type="text" name="promoCode" class="form-control" placeholder="Nhập mã (nếu có)">
+                                    <input type="text" name="promoCode" id="promoCodeInput" class="form-control" placeholder="Nhập mã (nếu có)" style="text-transform: uppercase;">
+                                    <button type="button" class="btn btn-outline-primary" id="btnApplyPromo">Áp dụng</button>
                                 </div>
-                                <small class="text-muted">Mã giảm giá sẽ được áp dụng khi đặt hàng thành công.</small>
+                                <small id="promoMessage" class="text-muted mt-1 d-block">Mã giảm giá sẽ được áp dụng trực tiếp.</small>
                             </div>
                             
                             <hr>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Tạm tính</span>
-                                <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                                <span id="cartSubtotal" th:data-total="${totalPrice}" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 text-success" id="discountRow" style="display: none !important;">
+                                <span>Khuyến mãi <small id="appliedPromoCode" class="fw-bold"></small></span>
+                                <span>-<span id="discountAmountSpan">0</span>đ</span>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
                                 <span>Phí vận chuyển</span>
@@ -100,16 +133,163 @@
                             </div>
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="fw-bold fs-5">Tổng cộng</span>
-                                <span class="fw-bold fs-4 text-danger" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
+                                <span class="fw-bold fs-4 text-danger" id="cartTotal" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary btn-lg w-100">ĐẶT HÀNG</button>
+                            <button type="button" id="btnPlaceOrder" class="btn btn-primary btn-lg w-100">ĐẶT HÀNG</button>
                             <p class="text-center text-muted small mt-3 mb-0">Khi bấm nút Đặt Hàng, bạn đã đồng ý với các Điều khoản & Chính sách của CenterPoint.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+        <!-- Terms and Conditions Modal -->
+        <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold text-primary"><i class="bi bi-shield-check me-2"></i>Điều khoản Thanh toán Online</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body py-0">
+                        <div class="alert alert-info small mb-3">Bạn đang chọn hình thức thanh toán trực tuyến. Vui lòng đọc kỹ các điều khoản bảo vệ trước khi tiến hành thanh toán.</div>
+                        
+                        <h6 class="fw-bold">1. Bảo vệ người mua (Khách hàng)</h6>
+                        <ul class="small text-muted mb-3">
+                            <li>Cam kết hoàn tiền 100% nếu sản phẩm không đúng như mô tả, hoặc phát sinh lỗi do nhà sản xuất trong vòng 7 ngày.</li>
+                            <li>Thông tin thẻ và thanh toán của bạn được mã hóa an toàn, CenterPoint tuyệt đối không lưu trữ mã CVV.</li>
+                            <li>Giao dịch trực tuyến được đảm bảo bởi cổng thanh toán của ngân hàng nhà nước.</li>
+                        </ul>
+                        
+                        <h6 class="fw-bold">2. Bảo vệ người bán (CenterPoint)</h6>
+                        <ul class="small text-muted mb-3">
+                            <li>Đơn hàng thanh toán online chỉ được xác nhận thành công sau khi giao dịch đã vào tài khoản của CenterPoint.</li>
+                            <li>CenterPoint có quyền từ chối các giao dịch có dấu hiệu gian lận thẻ tín dụng.</li>
+                        </ul>
+                        
+                        <h6 class="fw-bold">3. Liên hệ hỗ trợ</h6>
+                        <p class="small text-muted mb-0">Nếu bạn gặp bất kỳ sự cố nào trong lúc thanh toán, vui lòng liên hệ ngay cho chúng tôi qua số điện thoại: <strong class="text-danger">1900 1234</strong> (Hoạt động 24/7).</p>
+                    </div>
+                    <div class="modal-footer border-0 pb-4">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy bỏ</button>
+                        <button type="button" id="btnAgreeAndPay" class="btn btn-primary px-4">Đồng ý và Thanh toán</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const btnApply = document.getElementById('btnApplyPromo');
+                if(btnApply) {
+                    btnApply.addEventListener('click', function() {
+                        const code = document.getElementById('promoCodeInput').value;
+                        const subtotal = document.getElementById('cartSubtotal').getAttribute('data-total');
+                        const msg = document.getElementById('promoMessage');
+                        const discountRow = document.getElementById('discountRow');
+                        const discountSpan = document.getElementById('discountAmountSpan');
+                        const appliedCode = document.getElementById('appliedPromoCode');
+                        const totalSpan = document.getElementById('cartTotal');
+                        
+                        if(!code) {
+                            msg.className = 'text-danger mt-1 d-block';
+                            msg.innerText = 'Vui lòng nhập mã giảm giá!';
+                            return;
+                        }
+                        
+                        fetch(`/api/promotions/validate?code=${code}&orderTotal=${subtotal}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.valid) {
+                                    msg.className = 'text-success mt-1 d-block fw-bold';
+                                    msg.innerText = 'Áp dụng mã thành công!';
+                                    
+                                    discountRow.style.setProperty('display', 'flex', 'important');
+                                    appliedCode.innerText = `(${data.code})`;
+                                    discountSpan.innerText = new Intl.NumberFormat('vi-VN').format(data.discountAmount);
+                                    totalSpan.innerText = new Intl.NumberFormat('vi-VN').format(data.newTotal) + 'đ';
+                                } else {
+                                    msg.className = 'text-danger mt-1 d-block';
+                                    msg.innerText = data.message || 'Mã không hợp lệ';
+                                    discountRow.style.setProperty('display', 'none', 'important');
+                                    totalSpan.innerText = new Intl.NumberFormat('vi-VN').format(subtotal) + 'đ';
+                                }
+                            })
+                            .catch(err => {
+                                msg.className = 'text-danger mt-1 d-block';
+                                msg.innerText = 'Lỗi kết nối!';
+                            });
+                    });
+                }
+
+                // Payment method toggles
+                const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+                const visaForm = document.getElementById('visaForm');
+                
+                paymentRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'VISA') {
+                            visaForm.style.display = 'block';
+                        } else {
+                            visaForm.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Form Submit Interceptor
+                const btnPlaceOrder = document.getElementById('btnPlaceOrder');
+                const checkoutForm = document.getElementById('checkoutForm');
+                const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+                const btnAgreeAndPay = document.getElementById('btnAgreeAndPay');
+
+                btnPlaceOrder.addEventListener('click', function(e) {
+                    // Check HTML5 validity first
+                    if (!checkoutForm.checkValidity()) {
+                        checkoutForm.reportValidity();
+                        return;
+                    }
+
+                    const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                    
+                    if (selectedMethod === 'VISA') {
+                        const cardNumber = document.getElementById('visaCardNumber').value;
+                        const cardName = document.getElementById('visaCardName').value;
+                        const cardExpiry = document.getElementById('visaCardExpiry').value;
+                        const cardCvv = document.getElementById('visaCvv').value;
+                        
+                        if (!/^\d{16}$/.test(cardNumber.replace(/\s/g, ''))) {
+                            alert("Vui lòng nhập đúng định dạng 16 số thẻ.");
+                            return;
+                        }
+                        if (!/^[A-Z\s]+$/.test(cardName) || cardName.trim() === '') {
+                            alert("Tên in trên thẻ phải là chữ in hoa không dấu.");
+                            return;
+                        }
+                        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardExpiry)) {
+                            alert("Ngày hết hạn phải theo định dạng MM/YY.");
+                            return;
+                        }
+                        if (!/^\d{3,4}$/.test(cardCvv)) {
+                            alert("Mã CVV phải gồm 3 hoặc 4 chữ số.");
+                            return;
+                        }
+                    }
+
+                    if (selectedMethod === 'VISA' || selectedMethod === 'MOMO' || selectedMethod === 'BANK_TRANSFER') {
+                        // Show Terms Modal
+                        termsModal.show();
+                    } else {
+                        // COD -> submit immediately
+                        checkoutForm.submit();
+                    }
+                });
+
+                btnAgreeAndPay.addEventListener('click', function() {
+                    termsModal.hide();
+                    checkoutForm.submit();
+                });
+            });
+        </script>
     </div>
 </body>
 </html>

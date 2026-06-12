@@ -30,4 +30,7 @@ public class OrderItem {
 
     @Column(nullable = false)
     private int discount;
+
+    @OneToOne(mappedBy = "orderItem", fetch = FetchType.LAZY)
+    private Review review;
 }

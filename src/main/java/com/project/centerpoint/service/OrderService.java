@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PromotionRepository promotionRepository;
+    private final PromotionService promotionService;
     private final AddressRepository addressRepository;
     private final CartService cartService;
 
@@ -46,6 +46,7 @@ public class OrderService {
         order.setUser(user);
         order.setAddress(address);
         order.setPaymentMethod(paymentMethod);
+        order.setPaymentStatus("PENDING");
         order.setStatus(OrderStatus.PENDING);
         order.setShippingFee(0);
 
@@ -53,13 +54,17 @@ public class OrderService {
         order.setTotalAmount(totalAmount);
 
         if (promoCode != null && !promoCode.isEmpty()) {
-            Promotion promotion = promotionRepository.findByCodeAndIsActiveTrue(promoCode).orElse(null);
-            if (promotion != null) {
-                int discount = totalAmount * promotion.getDiscountPercent() / 100;
+            try {
+                Promotion promotion = promotionService.validateCode(promoCode, totalAmount);
+                int discount = promotionService.calculateDiscount(promotion, totalAmount);
                 order.setDiscountAmount(discount);
                 order.setPromotion(promotion);
-            } else {
-                order.setDiscountAmount(0);
+                
+                // Tăng lượt sử dụng
+                promotion.setUsedCount(promotion.getUsedCount() + 1);
+                promotionService.savePromotion(promotion);
+            } catch (Exception e) {
+                order.setDiscountAmount(0); // Bỏ qua nếu lỗi
             }
         } else {
             order.setDiscountAmount(0);
@@ -103,6 +108,10 @@ public class OrderService {
 
     public java.util.List<Order> getAllOrders() {
         return orderRepository.findAllByOrderByOrderDateDesc();
+    }
+
+    public java.util.List<Order> getAllOnlinePaymentOrders() {
+        return orderRepository.findByPaymentMethodInOrderByOrderDateDesc(java.util.Arrays.asList("VISA", "MOMO", "BANK_TRANSFER"));
     }
 
     @Transactional

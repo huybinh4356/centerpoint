@@ -19,6 +19,7 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final com.project.centerpoint.service.ReviewService reviewService;
 
     @GetMapping
     public String index(
@@ -50,6 +51,7 @@ public class ProductController {
             return "redirect:/products";
         }
         model.addAttribute("product", product);
+        model.addAttribute("reviews", reviewService.getReviewsByProduct(product));
         return "products/detail";
     }
 }

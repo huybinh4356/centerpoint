@@ -41,10 +41,124 @@
                                     </td>
                                     <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + 'đ'">10,000,000đ</td>
                                     <td th:text="${item.quantity}">1</td>
-                                    <td class="text-end pe-4 text-danger fw-bold" th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + 'đ'">10,000,000đ</td>
+                                    <td class="text-end pe-4">
+                                        <div class="fw-bold text-danger mb-2" th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + 'đ'">10,000,000đ</div>
+                                        
+                                        <div th:if="${order.status.name() == 'DELIVERED'}">
+                                            <button th:if="${item.review == null}" type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" th:data-bs-target="'#reviewModal' + ${item.id}">
+                                                Viết đánh giá
+                                            </button>
+                                            <div th:unless="${item.review == null}">
+                                                <span class="badge bg-success mb-1"><i class="bi bi-check-circle"></i> Đã đánh giá</span>
+                                                <br>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" th:data-bs-target="'#editReviewModal' + ${item.review.id}">
+                                                    Sửa đánh giá
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                
+                <!-- Review Modals -->
+                <div th:if="${order.status.name() == 'DELIVERED'}">
+                    <div th:each="item : ${order.items}" th:if="${item.review == null}">
+                        <div class="modal fade" th:id="'reviewModal' + ${item.id}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form th:action="@{/reviews/submit}" method="post">
+                                    <input type="hidden" name="orderId" th:value="${order.id}">
+                                    <input type="hidden" name="orderItemId" th:value="${item.id}">
+                                    
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title fw-bold">Đánh giá sản phẩm</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body py-0">
+                                            <div class="d-flex align-items-center border p-2 rounded bg-light mb-3">
+                                                <img th:if="${#lists.isEmpty(item.product.images)}" src="https://dummyimage.com/40x40/e9ecef/6c757d.jpg&text=Img" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <img th:unless="${#lists.isEmpty(item.product.images)}" th:each="img : ${item.product.images}" th:if="${img.isPrimary}" th:src="@{'/uploads/products/' + ${img.imageUrl}}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <span class="small fw-bold text-truncate" th:text="${item.product.name}"></span>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Chất lượng sản phẩm (1-5 sao)</label>
+                                                <select name="rating" class="form-select" required>
+                                                    <option value="5">5 - Tuyệt vời</option>
+                                                    <option value="4">4 - Tốt</option>
+                                                    <option value="3">3 - Khá</option>
+                                                    <option value="2">2 - Trung bình</option>
+                                                    <option value="1">1 - Tệ</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Nhận xét của bạn</label>
+                                                <textarea name="comment" class="form-control" rows="4" placeholder="Hãy chia sẻ những điều bạn thích hoặc không thích về sản phẩm này nhé..." required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 pb-4">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary px-4">Gửi đánh giá</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Edit Review Modals -->
+                    <div th:each="item : ${order.items}" th:unless="${item.review == null}">
+                        <div class="modal fade" th:id="'editReviewModal' + ${item.review.id}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form th:action="@{/reviews/update}" method="post">
+                                    <input type="hidden" name="orderId" th:value="${order.id}">
+                                    <input type="hidden" name="reviewId" th:value="${item.review.id}">
+                                    
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title fw-bold">Chỉnh sửa đánh giá</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body py-0">
+                                            <div class="d-flex align-items-center border p-2 rounded bg-light mb-3">
+                                                <img th:if="${#lists.isEmpty(item.product.images)}" src="https://dummyimage.com/40x40/e9ecef/6c757d.jpg&text=Img" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <img th:unless="${#lists.isEmpty(item.product.images)}" th:each="img : ${item.product.images}" th:if="${img.isPrimary}" th:src="@{'/uploads/products/' + ${img.imageUrl}}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <span class="small fw-bold text-truncate" th:text="${item.product.name}"></span>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Chất lượng sản phẩm (1-5 sao)</label>
+                                                <select name="rating" class="form-select" required>
+                                                    <option value="5" th:selected="${item.review.rating == 5}">5 - Tuyệt vời</option>
+                                                    <option value="4" th:selected="${item.review.rating == 4}">4 - Tốt</option>
+                                                    <option value="3" th:selected="${item.review.rating == 3}">3 - Khá</option>
+                                                    <option value="2" th:selected="${item.review.rating == 2}">2 - Trung bình</option>
+                                                    <option value="1" th:selected="${item.review.rating == 1}">1 - Tệ</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Nhận xét của bạn</label>
+                                                <textarea name="comment" class="form-control" rows="4" required th:text="${item.review.comment}"></textarea>
+                                            </div>
+                                            
+                                            <div class="mb-3" th:if="${item.review.adminReply != null}">
+                                                <label class="form-label fw-bold text-primary">Phản hồi từ Admin:</label>
+                                                <div class="p-2 bg-light border rounded text-muted" style="font-size: 0.9rem;" th:text="${item.review.adminReply}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 pb-4">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary px-4">Cập nhật đánh giá</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,5 +206,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
