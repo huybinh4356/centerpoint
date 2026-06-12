@@ -1,14 +1,20 @@
 @echo off
+chcp 65001 > nul
 echo ========================================================
-echo        STARTING CENTERPOINT SPRING BOOT APP
+echo        CENTERPOINT - Cửa hàng Laptop
 echo ========================================================
 echo.
-echo The website will automatically open in your browser in 10 seconds...
-
-:: Chạy ngầm một tiến trình đếm ngược 10 giây rồi mở trình duyệt
-start cmd /c "timeout /t 10 /nobreak >nul && start http://localhost:8081"
-
-:: Chạy Spring Boot ở cửa sổ hiện tại
-call mvnw.cmd spring-boot:run
-
+echo [1] Kiem tra Java...
+java -version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [LOI] Khong tim thay Java! Vui long cai dat JDK 17 tro len.
+    pause
+    exit /b
+)
+echo [OK] Java da duoc cai dat.
+echo.
+echo [2] Dang tai thu vien tu dong va Khoi dong Server...
+echo [INFO] Neu day la lan dau chay, qua trinh tai thu vien co the mat vai phut...
+echo.
+call .\mvnw spring-boot:run
 pause
