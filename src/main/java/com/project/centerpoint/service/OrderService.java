@@ -53,9 +53,10 @@ public class OrderService {
         int totalAmount = cartService.getTotalPrice(cart);
         order.setTotalAmount(totalAmount);
 
-        if (promoCode != null && !promoCode.isEmpty()) {
+        if (promoCode != null && !promoCode.trim().isEmpty()) {
             try {
-                Promotion promotion = promotionService.validateCode(promoCode, totalAmount);
+                String cleanCode = promoCode.trim().toUpperCase();
+                Promotion promotion = promotionService.validateCode(cleanCode, totalAmount);
                 int discount = promotionService.calculateDiscount(promotion, totalAmount);
                 order.setDiscountAmount(discount);
                 order.setPromotion(promotion);
@@ -64,6 +65,7 @@ public class OrderService {
                 promotion.setUsedCount(promotion.getUsedCount() + 1);
                 promotionService.savePromotion(promotion);
             } catch (Exception e) {
+                System.err.println("Lỗi áp dụng mã giảm giá khi đặt hàng: " + e.getMessage());
                 order.setDiscountAmount(0); // Bỏ qua nếu lỗi
             }
         } else {
